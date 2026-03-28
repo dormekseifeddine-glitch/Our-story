@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A small journey for us</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rose: #f4c2c2;
+      --beige: #f5f5dc;
+      --white: #ffffff;
+      --text-dark: #4a4a4a;
+      --error: #e74c3c;
+    }
+    body {
+      margin: 0; padding: 0; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      background: linear-gradient(135deg, var(--rose) 0%, var(--beige) 100%);
+      font-family: 'Quicksand', sans-serif; color: var(--text-dark);
+    }
+    .app-container {
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 40px; border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center; max-width: 400px; width: 90%;
+    }
+    h1 { font-family: 'Pacifico', cursive; color: #d16b8a; margin-bottom: 20px; }
+    p.hint { font-size: 1.2rem; margin-bottom: 20px; font-style: italic; }
+    .progress { font-size: 0.9rem; color: #888; margin-bottom: 15px; }
+    input {
+      width: 80%; padding: 12px; margin-bottom: 15px;
+      border: 2px solid var(--rose); border-radius: 8px;
+      font-family: 'Quicksand', sans-serif; font-size: 1rem;
+      text-align: center; outline: none; transition: border-color 0.3s;
+    }
+    input:focus { border-color: #d16b8a; }
+    button {
+      background-color: #d16b8a; color: var(--white);
+      border: none; padding: 12px 24px; border-radius: 25px;
+      font-size: 1.1rem; font-family: 'Quicksand', sans-serif;
+      cursor: pointer; transition: 0.3s;
+    }
+    button:hover { background-color: #b05574; transform: scale(1.05); }
+    .error-msg {
+      color: var(--error); font-size: 0.9rem; margin-top: 10px;
+      min-height: 20px; opacity: 0; transition: opacity 0.3s;
+    }
+    .error-msg.visible { opacity: 1; }
+    .success-container img {
+      width: 100%; max-width: 300px; border-radius: 10px;
+      margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .typewriter-text { min-height: 80px; line-height: 1.5; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+  <div id="app" class="app-container"></div>
+
+  <script>
+    const steps = [
+      { answer: "09/03/2024", hint: "day that change it all" },
+      { answer: "14/04/2024", hint: "day that touched all" },
+      { answer: "25/04/2024", hint: "day that melted all" },
+      { answer: "20/01/2025", hint: "home alone" }
+    ];
+
+    let currentStep = 0;
+    const appContainer = document.getElementById('app');
+
+    function renderIntro() {
+      appContainer.innerHTML = `
+        <h1>A small journey for us</h1>
+        <button onclick="startJourney()">Start</button>
+      `;
+    }
+
+    function startJourney() {
+      currentStep = 0;
+      loadStep();
+    }
+
+    function loadStep() {
+      const stepData = steps[currentStep];
+      appContainer.innerHTML = `
+        <div class="progress">Step ${currentStep + 1} / ${steps.length}</div>
+        <p class="hint">"${stepData.hint}"</p>
+        <input type="text" id="date-input" placeholder="DD/MM/YYYY" autocomplete="off" />
+        <br>
+        <button onclick="submitAnswer()">Unlock</button>
+        <div id="error-msg" class="error-msg">That's not it, try again my love.</div>
+      `;
+
+      document.getElementById('date-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') submitAnswer();
+      });
+    }
+
+    function submitAnswer() {
+      const inputEl = document.getElementById('date-input');
+      const errorEl = document.getElementById('error-msg');
+      const userInput = inputEl.value.trim();
+
+      if (userInput === steps[currentStep].answer) {
+        currentStep++;
+        if (currentStep === steps.length) {
+          showSuccess();
+        } else {
+          loadStep();
+        }
+      } else {
+        errorEl.classList.add('visible');
+        setTimeout(() => errorEl.classList.remove('visible'), 2500);
+      }
+    }
+
+    function showSuccess() {
+      appContainer.innerHTML = `
+        <div class="success-container">
+          <h1>I love you</h1>
+          <p id="typed-message" class="typewriter-text"></p>
+          <img src="photo.jpg" alt="Us" onerror="this.style.display='none'"/>
+        </div>
+      `;
+      typeWriterEffect();
+    }
+
+    function typeWriterEffect() {
+      const text = "Every date here is a piece of us. You are the best thing that happened in my life. I would choose you again every single time.";
+      let i = 0;
+      const element = document.getElementById("typed-message");
+      
+      function type() {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, 50);
+        }
+      }
+      type();
+    }
+
+    // Start the app
+    renderIntro();
+  </script>
+</body>
+</html>
